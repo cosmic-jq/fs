@@ -1,0 +1,172 @@
+RegistrationForm.js:
+
+
+import React from "react";
+
+class RegistrationForm extends React.Component {
+  state = {
+    name: "",
+    email: "",
+    password: "",
+    errors: {}
+  };
+
+  validate() {
+    const errors = {};
+
+    if (!this.state.name.trim()) {
+      errors.name = "Name is required";
+    } else if (this.state.name.trim().length < 3) {
+      errors.name = "Name must be at least 3 letters";
+    }
+
+    if (!this.state.email.trim()) {
+      errors.email = "Email is required";
+    } else if (!/^\S+@\S+\.\S+$/.test(this.state.email)) {
+      errors.email = "Email is invalid";
+    }
+
+    if (!this.state.password) {
+      errors.password = "Password is required";
+    } else if (this.state.password.length < 8) {
+      errors.password = "Password must be at least 8 characters";
+    }
+
+    this.setState({ errors });
+    return Object.keys(errors).length === 0;
+  }
+
+  handleChange = (e) => {
+    this.setState({
+      [e.target.name]: e.target.value
+    });
+  };
+
+  handleSubmit = (e) => {
+    e.preventDefault();
+
+    if (this.validate()) {
+      alert("Form submitted!");
+      this.setState({
+        name: "",
+        email: "",
+        password: "",
+        errors: {}
+      });
+    }
+  };
+
+  render() {
+    const { name, email, password, errors } = this.state;
+
+    return (
+      <div>
+        <h1>Registration form for USER Input:</h1>
+
+        <form onSubmit={this.handleSubmit}>
+          <input
+            type="text"
+            name="name"
+            placeholder="Name"
+            value={name}
+            onChange={this.handleChange}
+          />
+          <div>{errors.name}</div>
+
+          <input
+            type="email"
+            name="email"
+            placeholder="Email"
+            value={email}
+            onChange={this.handleChange}
+          />
+          <div>{errors.email}</div>
+
+          <input
+            type="password"
+            name="password"
+            placeholder="Password"
+            value={password}
+            onChange={this.handleChange}
+          />
+          <div>{errors.password}</div>
+
+          <button type="submit">Register</button>
+        </form>
+      </div>
+    );
+  }
+}
+
+export default RegistrationForm;
+
+
+
+
+
+index.js:
+
+
+import React from "react";
+import ReactDOM from "react-dom/client";
+import RegistrationForm from "./RegistrationForm";
+import "./index.css";
+
+const root = ReactDOM.createRoot(document.getElementById("root"));
+root.render(<RegistrationForm />);
+
+
+
+
+index.css:
+
+
+
+body {
+  font-family: Arial, sans-serif;
+  background-color: #fdf1f5;
+  color: #494052;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 90vh;
+}
+
+form {
+  width: 300px;
+  padding: 25px;
+  background-color: white;
+  border-radius: 12px;
+}
+
+h1 {
+  color: #9878a8;
+  font-size: 22px;
+  text-align: center;
+}
+
+input {
+  width: 100%;
+  padding: 10px;
+  margin: 8px 0;
+  border: 1px solid #e5d7eb;
+  border-radius: 6px;
+  box-sizing: border-box;
+}
+
+form div {
+  color: #d66b86;
+  font-size: 12px;
+}
+
+button {
+  width: 100%;
+  padding: 10px;
+  margin-top: 12px;
+  background-color: #c5a4d8;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
