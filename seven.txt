@@ -1,5 +1,102 @@
 WITH DOCKER :
 
+### Step 1: Open VS Code Terminal
+
+Pull MongoDB image:
+
+```bash
+docker pull mongo
+```
+
+### Step 2: Create MongoDB container
+
+```bash
+docker run -d --name mongodb -p 27017:27017 mongo
+```
+
+### Step 3: Start MongoDB
+
+```bash
+docker start mongodb
+```
+
+(Skip this if the container is already running.)
+
+### Step 4: Open MongoDB Shell
+
+```bash
+docker exec -it mongodb mongosh
+```
+
+You should see:
+
+```text
+test>
+```
+
+### Step 5: Select database
+
+```javascript
+use company
+```
+
+### Step 6: Remove old collection (if it exists)
+
+```javascript
+db.employees.drop()
+```
+
+### Step 7: Insert employee records
+
+Run your complete `insertMany()` command here.
+
+### Step 8: Execute all six queries
+
+Run each query from your program in `mongosh`:
+
+* `$gt` and `$lte`
+
+* `$in`
+
+* `$ne`
+
+* `$and` (implicit AND)
+
+* `$or`
+
+* Combined selectors
+
+### Step 9: Exit MongoDB
+
+```javascript
+exit
+```
+
+### Step 10: Stop MongoDB container
+
+```bash
+docker stop mongodb
+```
+
+### All commands at a glance
+
+| Terminal (VS Code)                                | MongoDB Shell (mongosh)        |
+| ------------------------------------------------- | ------------------------------ |
+| docker pull mongo                                 | use company                    |
+| docker run -d --name mongodb -p 27017:27017 mongo | db.employees.drop()            |
+| docker start mongodb                              | db.employees.insertMany([...]) |
+| docker exec -it mongodb mongosh                   | Run all 6 queries              |
+| docker stop mongodb (after exit)                                    |
+
+Important:
+
+* `docker pull` and `docker run` are needed only for the first-time setup.
+
+* For subsequent executions, just use `docker start mongodb` and `docker exec -it mongodb mongosh`.
+
+* Don't run `docker stop` until you've finished all your MongoDB queries.
+
+
 # Program 7 – MongoDB Comparison and Logical Selectors
 
 ## Step 1: Open Docker MongoDB
