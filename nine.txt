@@ -1,0 +1,319 @@
+**Program 9 – Employee Management using React, Axios & JSON Server**
+
+This is the complete program from the beginning, with **plain HTML first (table border included)** and then the pastel CSS applied separately.
+
+## **Step 1: Create the project folder**
+
+Create a folder named:
+
+```
+employee-api
+```
+
+Open it in VS Code → **File → Open Folder**.
+
+## **Step 2: Create&#x20;**`db.json`
+
+Inside `employee-api`, create a file called `db.json` and paste:
+
+```
+{
+  "employees": [
+    {
+      "id": 1,
+      "firstName": "John",
+      "lastName": "Doe",
+      "email": "john.doe@example.com"
+    },
+    {
+      "id": 2,
+      "firstName": "Jane",
+      "lastName": "Smith",
+      "email": "jane.smith@example.com"
+    }
+  ]
+}
+```
+
+## **Step 3: Start JSON Server**
+
+Open VS Code terminal (`Ctrl + ~`) and run:
+
+```
+npx json-server --watch db.json --port 5000
+```
+
+Keep this terminal running.
+
+Your API will be available at:
+
+`http://localhost:5000/employees`
+
+## **Step 4: Create the React project**
+
+Open a **second terminal** in VS Code. Navigate to the location where you want the React project created (outside `employee-api`), then run:
+
+```
+npx create-react-app employee-client
+```
+
+After it finishes:
+
+```
+cd employee-client
+```
+
+Install Axios:
+
+```
+npm install axios
+```
+
+## **Step 5: Replace&#x20;**`src/App.js`
+
+Open `employee-client/src/App.js`, remove the existing code, and paste the following.
+
+### **Version 1 – Plain HTML with border**
+
+For the first demonstration, keep CSS import commented and use `border="1"` on the table.
+
+```
+
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+// import './App.css';
+
+const API = 'http://localhost:5000/employees';
+
+function App() {
+  const [employees, setEmployees] = useState([]);
+  const [employee, setEmployee] = useState(null);
+
+  const fetchEmployees = async () => {
+    const res = await axios.get(API);
+    setEmployees(res.data);
+  };
+
+  useEffect(() => {
+    fetchEmployees();
+  }, []);
+
+  const saveEmployee = async (e) => {
+    e.preventDefault();
+
+    if (employee.id)
+      await axios.put(`${API}/${employee.id}`, employee);
+    else
+      await axios.post(API, employee);
+
+    setEmployee(null);
+    await fetchEmployees();
+  };
+
+  const deleteEmployee = async (id) => {
+    await axios.delete(`${API}/${id}`);
+    await fetchEmployees();
+  };
+
+  return (
+    <div className="container">
+      <h2>Employee Management</h2>
+
+      <button onClick={() => setEmployee({
+        firstName: '',
+        lastName: '',
+        email: ''
+      })}>
+        Add Employee
+      </button>
+
+      {employee && (
+        <form onSubmit={saveEmployee}>
+          <input placeholder="First Name" required
+            value={employee.firstName}
+            onChange={e => setEmployee({ ...employee, firstName: e.target.value })} />
+
+          <input placeholder="Last Name" required
+            value={employee.lastName}
+            onChange={e => setEmployee({ ...employee, lastName: e.target.value })} />
+
+          <input placeholder="Email" required
+            value={employee.email}
+            onChange={e => setEmployee({ ...employee, email: e.target.value })} />
+
+          <button type="submit">Save</button>
+          <button type="button" onClick={() => setEmployee(null)}>Cancel</button>
+        </form>
+      )}
+
+      <table border="1">
+        <thead>
+          <tr>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Email</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {employees.map(emp => (
+            <tr key={emp.id}>
+              <td>{emp.firstName}</td>
+              <td>{emp.lastName}</td>
+              <td>{emp.email}</td>
+              <td>
+                <button onClick={() => setEmployee(emp)}>Edit</button>
+                <button onClick={() => deleteEmployee(emp.id)}>Delete</button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+export default App;
+
+```
+
+## **Step 6: Run the React program**
+
+In the second terminal, make sure you're inside `employee-client` and run:
+
+```
+npm start
+```
+
+It will open:
+
+`http://localhost:3000`
+
+You can now show the plain HTML table with borders and demonstrate adding, editing and deleting employees.
+
+## **Step 7: Add CSS styling (second demonstration)**
+
+Now, after showing the plain HTML, open `src/App.js` and uncomment the CSS import:
+
+```
+import './App.css';
+```
+
+Then remove the HTML border from the table:
+
+```
+<table>
+```
+
+Now open `src/App.css`, delete everything inside, and paste the following minimal pastel styling.
+
+### `src/App.css`
+
+```
+
+body {
+  background: #fdf6f8;
+  font-family: Arial, sans-serif;
+  color: #444;
+}
+
+.container {
+  width: 80%;
+  margin: 40px auto;
+  padding: 20px;
+  background: white;
+  border-radius: 12px;
+}
+
+h2 {
+  color: #9b7189;
+  text-align: center;
+}
+
+button {
+  background: #e8d5e0;
+  border: none;
+  padding: 8px 12px;
+  margin: 5px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #d6b8ca;
+}
+
+input {
+  padding: 9px;
+  margin: 8px;
+  border: 1px solid #e2cdd8;
+  border-radius: 6px;
+}
+
+table {
+  width: 100%;
+  margin-top: 20px;
+  border-collapse: collapse;
+}
+
+th {
+  background: #f0e2eb;
+}
+
+td, th {
+  padding: 10px;
+  border: 1px solid #eadde5;
+  text-align: left;
+}
+
+tr:nth-child(even) {
+  background: #fcf8fb;
+}
+
+```
+
+The React page will automatically refresh when you save the CSS.
+
+[La sencilla plataforma de RR. HH. globales para empresas emergentes | Remote](https://images.openai.com/static-rsc-4/rDj3pX-vGhnAaig1bHRE-GACx2KEOp5CsDHN0hOOjLAwTnzNa3KbWx6H2WsX82w4XJNdWE69N0RLYli41SB-zY-DDepk1J0_pwC9j4Dxb_mR6TvWKav3E-K_pNPwbLPirxbzXY-hC9gj5OjM0roqtebByfC-rGGfoGBXzy_pt_E?purpose=inline)
+
+## **Step 8: Final folder structure**
+
+employee-api/
+
+&#x20;`db.json`
+
+&#x20;`employee-client/`
+
+public/
+
+src/
+
+&#x20;`App.js`
+
+&#x20;`App.css`
+
+&#x20;`index.js`
+
+package.json
+
+## **Step 9: Commands to run every time**
+
+## **Terminal 1 – JSON Server**
+
+```
+npx json-server --watch db.json --port 5000
+```
+
+Run inside the `employee-api` folder.
+
+## **Terminal 2 – React**
+
+```
+cd employee-client
+npm start
+```
+
+Run inside the React project folder.
+
+
